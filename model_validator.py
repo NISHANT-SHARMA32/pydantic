@@ -5,12 +5,11 @@ class patient(BaseModel):
     age : int
     contacts : Dict[str, str]
 
-    @model_validator(mode = "after")
-    @classmethod
-    def check(cls, model):
-        if model.age > 60 and "emergency" not in model.contacts:
+    @model_validator(mode = 'after')
+    def check(self) -> self:
+        if self.age > 60 and "emergency" not in self.contacts:
             raise ValueError("u didnot provided  the emergency contact number")
-        return model.contacts
+        return self
         
     
 
