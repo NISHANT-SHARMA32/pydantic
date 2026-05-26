@@ -36,7 +36,7 @@ class patient(BaseModel):
     email : EmailStr
     allergies : Optional[List[str]] = None
 
-    @field_validator('email', type = 'after')
+    @field_validator('email', mode = 'after')
     @classmethod
     def check(cls, email):
         valid = ["hdfc.com", "icici.com"]
@@ -64,4 +64,4 @@ field validator has two modes
     
         this code will throw an error stating cannot compare the int and str which is '33' > 30
 
-        so to avoid this use the type = 'after
+        so to avoid this use the mode = 'after

@@ -5,7 +5,7 @@ class patient(BaseModel):
     age : int
     contacts : Dict[str, str]
 
-    @model_validator(type = "after")
+    @model_validator(mode = "after")
     @classmethod
     def check(cls, model):
         if model.age > 60 and "emergency" not in model.contacts:
