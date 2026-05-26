@@ -1,0 +1,67 @@
+Pydantic is the most popular data validation and settings management library for Python.
+
+It enforces type hints at runtime, providing user-friendly errors when data is invalid, and safely parsing data into clean Python objects.
+
+Optional[List[str]] = None
+you can use this to add the layer of checking 
+
+here list should only contain str as datatype. [so two layer checking is there].
+
+
+---------********-----------
+pydantic also give us custom datatype which are not the part of python.
+
+from pydantic import EmailStr[this will check whether there is @ in the email or not].
+
+EmailStr, AnyUrl.
+
+---------********-----------
+
+we have Field() function to add custom validation like 
+
+age : str = Field(max_length = 50) [the maximum character should be less than equal to 50]
+
+Field function is also used to add meta data for the variables.
+
+---------********-----------
+
+if for our business we want to add some strict checking regardig our business then we can add field_validator
+
+
+class patient(BaseModel):
+    name : Annotated[str, Field(max_length=50, title= "name of the patient", examples= "nishant")]
+    age : Annotated[int, Field(gt = 0, strict=True)]
+    married : Annotated[bool, Field(description="Tell us you are married or not")]
+    website : Optional[AnyUrl] = None
+    email : EmailStr
+    allergies : Optional[List[str]] = None
+
+    @field_validator('email', type = 'after')
+    @classmethod
+    def check(cls, email):
+        valid = ["hdfc.com", "icici.com"]
+
+        data = email.split('@')[-1]
+
+        if data not in valid:
+            raise ValueError("Not a valid email address")
+
+        return email
+
+
+field validator has two modes 
+
+1. first is before which will give the value before the type coersion
+
+        age = '33'
+
+        @field_validator('age')
+        @classmethod
+        def check(cls, value):
+            if value > 30:
+                raise ValueError
+
+    
+        this code will throw an error stating cannot compare the int and str which is '33' > 30
+
+        so to avoid this use the type = 'after
